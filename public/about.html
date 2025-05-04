@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About - Food Bridge</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="web.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico">
+</head>
+
+<body>
+
+    <!--header Section-->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand" href="web.html">
+                <img src="favicon.ico" alt="FOOD Bridge logo" width="40" height="40" class="d-inline-block align-top">
+                <span class="brand-text"><b><span style="color:rgb(211, 28, 150)">F</span><span
+                            style="color:rgb(186, 54, 226)">O</span><span style="color:rgb(41, 143, 41)">O</span><span
+                            style="color:rgb(122, 172, 230)">D</span><span style="color:blue">Bridge</span></b></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="web.html">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">ABOUT</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="nonprofits.html">NON PROFITS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="faq.html">FAQ</a>
+                    </li>
+                </ul>
+
+                <div class="dropdown " style="margin-left:40px;">
+                    <button class="btn btn-secondary" onclick="gotosignup(this)" type="button" aria-expanded="false">
+                        Login
+                    </button>
+                    <script>
+                        function gotosignup() {
+                            window.location.href = window.location.origin + "/signup";
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h1 class="display-4 fw-bold mb-4">About FoodBridge</h1>
+                        <p class="lead mb-4">Connecting surplus food with those who need it most</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-5">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <img src="group.jpg" class="img-fluid rounded-3 shadow-lg">
+
+
+                    </div>
+                    <div class="col-lg-6">
+                        <h2 class="section-title mymission">Our Mission</h2>
+
+                        <h1 class="myheading">Here's what we do</h1>
+                    </div>
+                </div>
+                <div>
+                    <!-- <p class="lh-lg">Hi👋 We are the team of FoodBridge, the CEO's of Amidst the pandemic, FoodBridge turned a new
+                            leaf, generating a refresh on our offerings and the way we service our donors. Yes, this is
+                            another “the pandemic completely flipped our business upside down” situation. With these
+                            changes, something new and groundbreaking was born.We set out to build a surplus redistribution
+                            tool that could service any business or organization that is:<br>
+                            -Easy to use<br>
+                            -Flexible<br>
+                            -Scalable<br>
+                            -Reliable<br>
+                            -One of a kind!<br>
+                            And we did just that! We are proud that the FoodBridge App can be your one-stop-shop for donations;
+                            from
+                            a single donation of five pizzas to a nation-wide enterprise program with hundreds of locations
+                            -
+                            FoodBridge has you covered.FoodBridge is a resource for sharing - connecting surplus to those who need it
+                            most. There is too much food to be wasted. With 13% of Indians struggling with food insecurity,
+                            and nearly 149 billion meals worth of food headed to the landfill each year, YOU can be the
+                            force for change. Hunger isn't a scarcity problem as much as it's a process problem, and FoodBridge
+                            is the solution.<br>
+
+                            We'd love to connect with you! Reach out to us here.<br><br>
+
+                            Cheers!<br>
+                            Team FoodBridge</p> 
+                </div> -->
+            </div>
+        </section>
+
+        <!--Small Acknowledgment-->
+        <div class="container my-5 pt-5 ">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-8 text-success p-4 r">
+                    <p class="lh-lg">FoodBridge is proud to be supported by some of the leading investors in hospitality
+                        and
+                        sustainability, and
+                        we thank them for their continuous supply of wisdom and support.</p>
+                </div>
+            </div>
+        </div>
+
+        <!--Footer section-->
+        <div class="container-fluid bg-dark text-white">
+            <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-2 mt-5 border-top flex-shrink-0">
+                <div class="col-md-7">
+                    <h5>FoodBridge</h5>
+                    <p class="text-body-white">FoodBridge is the leading technology-enabled surplus recovery service,
+                        empowering
+                        businesses to easily distribute their surplus. National brands across the INDIA work with
+                        FoodBridge to
+                        reduce food insecurity in the communities where they operate, help reduce their greenhouse gas
+                        emissions, and boost their profitability.</p>
+                </div>
+
+                <div class="col-md-2">
+                    <h5>Company</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="web.html" class="nav-link p-0 text-body-white">Home</a></li>
+                        <li class="nav-item mb-2"><a href="about.html" class="nav-link p-0 text-body-white">About</a>
+                        </li>
+                        <li class="nav-item mb-2"><a href="nonprofits.html"
+                                class="nav-link p-0 text-body-white">Nonprofits</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-2">
+                    <h5>More</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="news.html" class="nav-link p-0 text-body-white">News</a></li>
+                        <li class="nav-item mb-2"><a href="faq.html" class="nav-link p-0 text-body-white">FAQ &
+                                Support</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-md-12">
+                    <hr class="bg-white"><br>
+                    <p class="mb-0">© 2025 Feeding Hands.All Rights Reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </main>
+</body>
+
+</html>

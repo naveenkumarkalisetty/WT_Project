@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reverse Geocoding with Node.js</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <style>
+    #map { height: 350px; width: 100%; }
+    .address-box { margin-top: 15px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; }
+
+    /* Style the search bar */
+    .leaflet-control-geocoder {
+      border: 2px solid #007bff;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      padding: 5px;
+      background-color: #fff;
+    }
+    .leaflet-control-geocoder-icon {
+      background-color: #007bff;
+      border-radius: 3px;
+    }
+    .leaflet-control-geocoder-form input {
+      border: none;
+      padding: 6px;
+      font-size: 14px;
+      width: 200px;
+    }
+    .leaflet-control-geocoder-form input:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>Click on the Map or Search to Get Full Address</h2>
+  <div id="map"></div>
+  <div class="address-box" id="address">Click on the map to fetch address...</div>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script>
+    const map = L.map('map').setView([14.4743, 78.8231], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker;
+
+    // Try getting user's location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const userLat = position.coords.latitude;
+        const userLon = position.coords.longitude;
+        map.setView([userLat, userLon], 14);
+        updateLocation(userLat, userLon);
+      });
+    }
+
+    // Add search control
+    const geocoderControl = L.Control.geocoder({
+      defaultMarkGeocode: false
+    })
+    .on('markgeocode', function(e) {
+      const latlng = e.geocode.center;
+      updateLocation(latlng.lat, latlng.lng);
+    })
+    .addTo(map);
+
+    // Update map and fetch address
+    function updateLocation(lat, lon) {
+      fetch('/get-address', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ lat: lat, lon: lon })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const address = data.display_name || data.error || "No address found";
+        document.getElementById("address").innerText = address;
+
+        // Remove previous marker
+        if (marker) {
+          map.removeLayer(marker);
+        }
+
+        // Add new marker
+        marker = L.marker([lat, lon]).addTo(map)
+          .bindPopup(address)
+          .openPopup();
+      })
+      .catch(err => {
+        console.error(err);
+        alert("⚠ Failed to fetch address. Please try again later.");
+      });
+    }
+
+    // Handle map click
+    map.on('click', function(e) {
+      updateLocation(e.latlng.lat, e.latlng.lng);
+    });
+  </script>
+</body>
+</html>

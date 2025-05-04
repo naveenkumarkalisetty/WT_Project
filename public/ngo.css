@@ -1,0 +1,107 @@
+/* Bright, modern, Zomato-like UI for NGO dashboard */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #fff0f5;
+    color: #333;
+  }
+  
+  header {
+    background: #ff4d6d;
+    color: white;
+    text-align: center;
+    padding: 20px 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 2em;
+  }
+  
+  #main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  
+  .card {
+    background: #ffe0e9;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .card h3 {
+    margin-top: 0;
+    color: #c9184a;
+  }
+  
+  .card p {
+    font-size: 0.95em;
+    margin-bottom: 12px;
+  }
+  
+  .claim-btn {
+    background-color: #ff4d6d;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+  }
+  
+  .claim-btn:hover {
+    background-color: #d6336c;
+  }
+  
+  #map-container {
+    margin-top: 30px;
+    position: relative;
+  }
+  
+  #map {
+    height: 400px;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  
+  #route-info {
+    background: #fff;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    font-size: 0.95em;
+  }
+  
+  @media (min-width: 768px) {
+    #main {
+      flex-direction: row;
+    }
+  
+    #cards-container {
+      flex: 1;
+    }
+  
+    #map-container {
+      flex: 1.2;
+      margin-left: 20px;
+    }
+  }

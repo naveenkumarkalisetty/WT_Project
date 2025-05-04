@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Food Bridge</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="web.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
+
+</head>
+
+<body>
+    <!--header Section-->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand" href="web.html">
+                <img src="favicon.ico" alt="FOOD Bridge logo" width="40" height="40" class="d-inline-block align-top">
+                <span class="brand-text"><b><span style="color:rgb(211, 28, 150)">F</span><span style="color:rgb(186, 54, 226)">O</span><span style="color:rgb(41, 143, 41)">O</span><span style="color:rgb(122, 172, 230)">D</span><span style="color:blue">Bridge</span></b></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="web.html">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">ABOUT</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="nonprofits.html">NON PROFITS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="faq.html">FAQ</a>
+                    </li>
+                </ul>
+                <div class="dropdown" style="margin-left:40px;">
+                    <button class="btn btn-secondary" onclick="gotosignup(this)" type="button" 
+                        aria-expanded="false">
+                        Login
+                    </button>
+                    <script>
+                        function gotosignup(){
+                            window.location.href = window.location.origin + "/signup";
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!--Main content -->
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="display-4 fw-bold mb-4">Bridging Food Surplus With Those In Need</h1>
+                        <p class="lead mb-4">Help reduce food waste and feed those in need through our innovative platform.</p>
+                        <button class="btn btn-primary btn-lg" onclick="gotosignup(this)">Get Started</button>
+                    </div>
+                    <div class="col-lg-6">
+                        <img src="banner.jpg" alt="Food donation" class="img-fluid rounded-3 shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--Carousel Section-->
+        <!-- <section id="carousel">
+            <div id="carouselExampleIndicators" class="carousel slide ">
+
+                <div class="carousel-indicators ">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                        class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                        aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                        aria-label="Slide 3"></button>
+                </div>
+
+                <div class="carousel-inner mt-5">
+                    <div class="carousel-item active">
+                        <img src="4.jpg" class="d-block w-100" alt="Image of food">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="2.jpg" class="d-block w-100 " alt="Image of food">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="3.jpg" class="d-block w-100 " alt="Image of food">
+                    </div>
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+
+            </div>
+        </section> -->
+
+        <!--Mission Section-->
+        <div class="container my-5">
+            <div class="row featurette">
+
+                <!--Image section-->
+                <div class="col-md-6  div-class ">
+                    <img src="phone.jpg" class="img-fluid " alt="Mission image" width="400" height="400">
+                </div>
+
+                <div class="col-md-6 ">
+                    <h2 class="featurette-heading mt-5 fw-normal lh-1">Our <span class="text-body-secondary">MISSION</span>
+                    </h2>
+                    <p class="lead">FOOD Bridge helps businesses redistribute high-quality surplus to people in need. Help
+                        neighbors, improve profitability, show compliance, and reduce emissions all with one simple
+                        app.</p>
+                    <br><br>
+                    <button type="button" class="btn btn-primary" onclick="gotosignup(this)">Start Donating Now</button>
+                </div>
+
+
+            </div>
+        </div>
+
+        <section class="articles">
+            <article>
+              <div class="article-wrapper">
+                <figure>
+                  <img src="article-1.jpeg" alt="" />
+                </figure>
+                <div class="article-body">
+                  <h2>Roti Bandhan</h2>
+                  <p>
+                    A soulful name that highlights the mission of connecting food donors with the hungry, like a bridge of nourishment.
+
+                </p>
+                  <a href="#" class="read-more">
+                    Read more <span class="sr-only">about this is some title</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+            <article>
+          
+              <div class="article-wrapper">
+                <figure>
+                  <img src="article-2.jpg" alt="" />
+                </figure>
+                <div class="article-body">
+                  <h2>Bhojan Daan</h2>
+                  <p>
+                    Emphasizes the act of giving food as a noble donation and highlights the warmth and impact behind every shared meal.
+                  </p>
+                  <a href="#" class="read-more">
+                    Read more <span class="sr-only">about this is some title</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+            <article>
+          
+              <div class="article-wrapper">
+                <figure>
+                  <img src="article-3.jpg" alt="" />
+                </figure>
+                <div class="article-body">
+                  <h2>Anna Setu</h2>
+                  <p>
+                    Focuses on the emotional and cultural bond that sharing food creates among communities, especially in Indian tradition.
+                  </p>
+                  <a href="#" class="read-more">
+                    Read more <span class="sr-only">about this is some title</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+          </section>
+
+
+        <div class="container-fluid">
+            <div class="row counter-row">
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="counter-box colored">
+                  <i class="fa fa-thumbs-o-up"></i>
+                  <span class="counter">2147</span>
+                  <p>NGOs Registered</p>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="counter-box colored">
+                  <i class="fa fa-group"></i>
+                  <span class="counter">3275</span>
+                  <p>Donations Made</p>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="counter-box colored">
+                  <i class="fa fa-shopping-cart"></i>
+                  <span class="counter">289</span>
+                  <p>Active Donors</p>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="counter-box colored">
+                  <i class="fa fa-user"></i>
+                  <span class="counter">15630</span>
+                  <p>People Fed</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          
+
+
+        <!--Ready to receive section-->
+        <div class="container my-5">
+            <div class="row featurette align-items-center">
+
+                <div class="  col-md-5 ">
+                    <img src="12.jpg" class="img-fluid rounded " >
+                </div>
+
+                <div class="col-md-7   ">
+                    <h2 class="featurette-heading fw-normal mt-5 lh-1">Ready to <span class="text-body-secondary">Receive
+                        </span>Donations?</h2>
+                    <p class="lead">Not a food bank or food pantry? Not a problem! We believe that working with all
+                        kinds of
+                        nonprofits is the best way to address food equity in our communities. If your organization is a
+                        501(c)(3) and can use surplus food or non-food donations, we are happy to work with you. Rest
+                        assured that no matter your organization, we ensure that donations are delivered with dignity.
+                    </p>
+                    <br>
+                    <button type="button" class="btn btn-primary" onclick="gotosignup(this)">Sign Up</button>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+
+    <!--Footer section-->
+    <footer>
+        <div class="container footer-grid">
+          <div class="footer-section">
+            <h5>About</h5>
+            <p>Sol Food Bridge connects surplus food with communities in need using smart technology.</p>
+          </div>
+          <div class="footer-section">
+            <h5>Quick Links</h5>
+            <a href="#" class="footer-link">Home</a>
+            <a href="login.html" class="footer-link">Donate</a>
+            <a href="login.html" class="footer-link">NGOs</a>
+            <a href="about.html" class="footer-link">Contact Us</a>
+          </div>
+          <div class="footer-section">
+            <h5>Contact</h5>
+            <p>Email: info@solfoodbridge.org</p>
+            <p>Phone: +91 98765 43210</p>
+          </div>
+        </div>
+      
+        <div class="footer-bottom">
+          <p>&copy; 2025 Sol Food Bridge. All rights reserved.     
+          <a href="https://loremipsum.io/privacy-policy">Privacy Policy</a> | <a href="https://loremipsum.io/privacy-policy">Terms of Use</a></p>
+        </div>
+      </footer>
+      
+      
+<script>
+
+            
+            
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const counters = document.querySelectorAll(".counter");
+    let hasAnimated = false;
+
+    const animateCounter = (el) => {
+      const target = +el.innerText;
+      let count = 0;
+
+      const updateCount = () => {
+        count += Math.ceil(target / 100);
+        if (count < target) {
+          el.innerText = count;
+          requestAnimationFrame(updateCount);
+        } else {
+          el.innerText = target;
+        }
+      };
+      updateCount();
+    };
+
+    const observer = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !hasAnimated) {
+            counters.forEach(counter => animateCounter(counter));
+            hasAnimated = true;
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.5 } // Trigger when 50% of the counter section is visible
+    );
+
+    const counterSection = document.querySelector(".counter-row");
+    if (counterSection) {
+      observer.observe(counterSection);
+    }
+  });
+
+  
+</script>
+          
+</body>
+
+</html>

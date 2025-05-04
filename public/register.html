@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Registration Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        /* Custom CSS for additional styling */
+        body {
+            background-color: black;
+            font-family: 'Poppins', sans-serif;
+            background-image: url('logo.jpeg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            
+        }
+        .login-box {
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .login-img {
+      width: 100%;
+      max-width: 350px;
+    }
+    form, form * {
+    font-family: 'Poppins', sans-serif;
+        }
+
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-outline-primary {
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .btn-outline-success {
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .modal-content {
+            border-radius: 10px;
+        }
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .modal-title {
+            font-weight: bold;
+        }
+        .form-check-label {
+            font-weight: normal;
+        }
+        textarea {
+            resize: none;
+        }
+        #map {
+            height: 200px;
+            width: 100%;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+    
+</head>
+<body>
+    
+    <div class="container mt-5">
+            <div class="row justify-content-center align-items-center">
+              <div class="col-md-10 login-box d-flex flex-wrap p-4">
+                
+                <!-- Left Illustration -->
+                <div class="col-md-6 text-center d-flex align-items-center justify-content-center">
+                  <img src="logo.jpeg" alt="Login Illustration" class="login-img">
+                </div>
+  
+
+<!-- Registration Modal -->
+<div class="col-md-6 mx-4 py-4">
+    <div class="container">
+        
+            <div class="modal-body">
+                <form id="registrationForm">
+                    <div class="mb-3">
+                        <label class="form-label">Register as:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="registrationType" id="userRegistration" value="user" checked>
+                            <label class="form-check-label" for="userRegistration">User</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="registrationType" id="corporationRegistration" value="corporation">
+                            <label class="form-check-label" for="corporationRegistration">Corporation/Institution</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="registrationType" id="ngoRegistration" value="ngo">
+                            <label class="form-check-label" for="ngoRegistration">NGO</label>
+                        </div>
+                    </div>
+
+                    <!-- Corporation Registration Fields -->
+                    <div id="corporationFields" style="display: none;">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="corporationName" id="corporationName" placeholder="Name">
+                            <label for="corporationName">Name</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="corporationType" class="form-label">Type</label>
+                            <select class="form-select" name="corporationType" id="corporationType">
+                                <option value="Corporation">Corporation</option>
+                                <option value="Mess">Institution mess</option>
+                            </select>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="tel" class="form-control" name="corporationContact" id="corporationContact" placeholder="Contact Number">
+                            <label for="corporationContact">Contact Number</label>
+                        </div>
+                    </div>
+
+                    <!-- User Registration Fields -->
+                    <div id="userFields">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
+                            <label for="username">Username</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" name="userAge" id="userAge" placeholder="Age" required>
+                            <label for="userAge">Age</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="tel" class="form-control" name="userContact" id="userContact" placeholder="Contact Number" required>
+                            <label for="userContact">Contact Number</label>
+                        </div>
+                    </div>
+
+                    <!-- NGO Registration Fields -->
+                    <div id="ngoFields" style="display: none;">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name = "ngoUsername" id="ngoUsername" placeholder="Name">
+                            <label for="ngoUsername">Name</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="details" class="form-label">Tell us something that highlights 'Food Needs'</label>
+                            <textarea class="form-control" name = "details" id="details" rows="3"></textarea>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="tel" class="form-control" name="ngoContact" id="ngoContact" placeholder="Contact Number">
+                            <label for="ngoContact">Contact Number</label>
+                        </div>
+                    </div>
+
+                    <!-- Location Section -->
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Location / Address</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Your address will appear here" readonly required>
+                    </div>
+                    <input type="hidden" id="lat" name="lat">
+                    <input type="hidden" id="lon" name="lon">
+                    <button type="button" class="btn btn-secondary mb-2" onclick="getLocation()">Get My Location</button>
+                    <div id="map"></div>
+
+                    <button type="submit" class="btn btn-primary w-100" id="registerButton">Register as User</button>
+                    <button type="button" class="btn btn-secondary w-100 mt-2" id="resetButton" onclick="resetLoginForm()">Reset</button>
+                </form>
+            </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Toggle Corporation/User/NGO Registration Fields
+        const userRegistration = document.getElementById('userRegistration');
+        const corporationRegistration = document.getElementById('corporationRegistration');
+        const ngoRegistration = document.getElementById('ngoRegistration');
+        const userFields = document.getElementById('userFields');
+        const corporationFields = document.getElementById('corporationFields');
+        const ngoFields = document.getElementById('ngoFields');
+        const registerButton = document.getElementById('registerButton');
+
+
+        // values
+        // user
+        const userData = [
+            document.getElementById('username'),  
+            document.getElementById('userAge'),
+            document.getElementById('userContact')
+        ];
+
+        // corporation
+        const corporationData = [
+            document.getElementById('corporationName'), 
+            document.getElementById('corporationType'),
+            document.getElementById('corporationContact')
+        ];
+
+        // ngo
+        const ngoData = [
+            document.getElementById('ngoUsername'), 
+            document.getElementById('details'),
+            document.getElementById('ngoContact')
+        ];
+
+
+        userRegistration.addEventListener('change', () => {
+            userFields.style.display = 'block';
+            corporationFields.style.display = 'none';
+            ngoFields.style.display = 'none';
+
+            registerButton.innerText = "Register as user";
+
+            // removing attributes
+            corporationData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            ngoData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            if (userRegistration.checked) {
+                userData.forEach((element) => {
+                    element.setAttribute('required', true);
+                })
+            }
+        });
+
+        corporationRegistration.addEventListener('change', () => {
+            userFields.style.display = 'none';
+            corporationFields.style.display = 'block';
+            ngoFields.style.display = 'none';
+
+            registerButton.innerText = "Register as Corporation";
+
+            userData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            ngoData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            if (corporationRegistration.checked) {
+                corporationData.forEach((element) => {
+                    element.setAttribute('required', true);
+                })
+            }
+        });
+
+        ngoRegistration.addEventListener('change', () => {
+            userFields.style.display = 'none';
+            corporationFields.style.display = 'none';
+            ngoFields.style.display = 'block';
+
+            registerButton.innerText = "Register as NGO";
+
+            userData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            corporationData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            if (ngoRegistration.checked) {
+                ngoData.forEach((element) => {
+                    element.setAttribute('required', true);
+                })
+            }
+        });
+
+        // Reset Login Form
+        function resetLoginForm() {
+            document.getElementById('registrationForm').reset();
+        }
+
+        
+    
+
+        // Get Location using Geolocation and Reverse Geocoding (using Nominatim)
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, positionError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        async function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            document.getElementById('lat').value = lat;
+            document.getElementById('lon').value = lon;
+            // Display map and set view
+            let mapDiv = document.getElementById('map');
+            mapDiv.style.display = "block";
+            let map = L.map('map').setView([lat, lon], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            
+            let marker = L.marker([lat, lon]).addTo(map);
+
+            // Reverse Geocode using Nominatim
+            map.on('click', async function(e) {
+                if (marker) {
+                    map.removeLayer(marker);
+                }
+                marker = L.marker(e.latlng).addTo(map);
+
+                await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${e.latlng.lat}&lon=${e.latlng.lng}&format=json`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        document.getElementById('address').value = data.display_name || '';
+                    })
+                    .catch(err => console.error("Reverse geocoding error:", err));
+            });
+
+            await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('address').value = data.display_name || "Address not found";
+                })
+                .catch(err => console.error(err));
+        }
+
+        function positionError(error) {
+            alert("Error in getting your location: " + error.message);
+        }
+
+        
+
+        
+
+        // Registration 
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            let registerType = document.querySelector('input[name="registrationType"]:checked').value;
+            
+            const registerData = { registerType, data:{} };
+            let data;
+            if (registerType == 'user') {
+                data = ['username', 'age', 'contactNumber'];
+                for (let i = 0; i < data.length; i++) {
+                    registerData.data[data[i]] = userData[i].value;
+                }
+            }
+            else if (registerType == 'corporation') {
+                data = ['name', 'corporationType', 'contactNumber']; 
+                for (let i = 0; i < data.length; i++) {
+                    registerData.data[data[i]] = corporationData[i].value;
+                }
+            }
+            else if (registerType == 'ngo') {
+                data = ['name', 'details', 'contactNumber'];
+                for (let i = 0; i < data.length; i++) {
+                    registerData.data[data[i]] = ngoData[i].value;
+                }
+            }
+            // Add location details
+            registerData.data.address = document.getElementById('address').value;
+            registerData.data.lat = document.getElementById('lat').value;
+            registerData.data.lon = document.getElementById('lon').value;
+            try {
+                const responseMessage = await fetch('/google-register', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(registerData)
+                });
+                if (responseMessage.ok) {
+                    alert("Registration successful");
+                    window.location.href = '/dashboard';
+                } else {
+                    alert(await responseMessage.text());
+                }
+            } catch(err) {
+                console.log(err.message);
+                alert("Registration failed: " + err.message);
+            }
+            
+        });
+
+        
+        
+    </script>
+</body>
+</html>

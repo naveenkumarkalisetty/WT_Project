@@ -1,0 +1,17 @@
+scikit-learn
+numpy
+streamlit
+seaborn
+pandas
+fastapi
+uvicorn
+sqlalchemy
+passlib
+pydantic[email]
+bcrypt
+python-jose
+python-multipart
+ipykernel
+xgboost
+lightgbm
+pyjwt

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NGO Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { background-color: #f4f6f9; padding: 40px; font-family: 'Poppins', sans-serif; }
+        .container {
+            max-width: 900px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .dashboard-header {
+            background: #28a745;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .card { border-radius: 10px; }
+        .table-container { margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h2>Hello, <span id="ngoName">User</span>!</h2>
+        <h2>NGO Dashboard</h2>
+        <p>Manage food donations and track pickup requests</p>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card bg-success text-white text-center p-3">
+                    <h4>Total Donations Received</h4>
+                    <h2 id="totalDonations">-</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-warning text-white text-center p-3">
+                    <h4>Pending Pickups</h4>
+                    <h2 id="pendingPickups">-</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info text-white text-center p-3">
+                    <h4>Completed Pickups</h4>
+                    <h2 id="completedPickups">-</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        let userId;
+
+        // Initialize socket connection
+        async function initializeSocket() {
+            const response = await fetch('/api/profile');
+            const user = await response.json();
+            userId = user._id;
+            
+            socket.emit('authenticate', userId);
+            
+            socket.on('new message notification', (data) => {
+                showNotification(data);
+                loadNotifications(); // Reload notifications list
+            });
+        }
+
+        function showNotification(data) {
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-info alert-dismissible fade show';
+            notification.innerHTML = `
+                <strong>New message from ${data.sender}:</strong> ${data.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.insertBefore(notification, document.body.firstChild);
+            
+            // Auto dismiss after 5 seconds
+            setTimeout(() => notification.remove(), 5000);
+        }
+
+        async function loadNotifications() {
+            try {
+                const response = await fetch('/api/chat/list');
+                const chats = await response.json();
+                const notificationsDiv = document.getElementById('notifications');
+                notificationsDiv.innerHTML = '';
+
+                if (chats.length === 0) {
+                    notificationsDiv.innerHTML = '<div class="list-group-item">No messages</div>';
+                    return;
+                }
+
+                chats.forEach(chat => {
+                    const otherUser = chat.donor._id === userId ? chat.claimer : chat.donor;
+                    const lastMessage = chat.messages[chat.messages.length - 1];
+                    
+                    const div = document.createElement('div');
+                    div.className = 'list-group-item';
+                    div.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>${otherUser.name || otherUser.username}</h6>
+                                <small class="text-muted">${lastMessage ? lastMessage.content : 'No messages'}</small><br>
+                                <small>Last activity: ${new Date(chat.lastMessage).toLocaleString()}</small>
+                            </div>
+                            <button class="btn btn-primary" onclick="openChat('${chat._id}')">
+                                View Chat
+                            </button>
+                        </div>
+                    `;
+                    notificationsDiv.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+            }
+        }
+
+        function openChat(chatId) {
+            window.location.href = `/chat.html?id=${chatId}`;
+        }
+
+        // Add this new function to fetch stats
+        async function loadNGOStats() {
+            try {
+                const response = await fetch('/api/ngo-stats');
+                const stats = await response.json();
+                
+                document.getElementById('totalDonations').textContent = stats.totalDonations;
+                document.getElementById('pendingPickups').textContent = stats.pendingPickups;
+                document.getElementById('completedPickups').textContent = stats.completedPickups;
+            } catch (error) {
+                console.error('Error loading NGO stats:', error);
+            }
+        }
+
+        // Modify the DOMContentLoaded event listener to include stats loading
+        document.addEventListener("DOMContentLoaded", async function() {
+            await initializeSocket();
+            const response = await fetch('/api/profile');
+            const user = await response.json();
+            document.getElementById("ngoName").innerText = user.name;
+            loadNotifications();
+            loadNGOStats(); // Add this line to load stats
+        });
+    </script>
+
+    <div class="container mt-5 text-center">
+        <h3>Looking for food donations?</h3>
+        <p>Find and claim food donations near you.</p>
+        <a href="/nearby" class="btn btn-primary">Discover Nearby Donations</a>
+    </div>
+
+    <div class="container mt-5 text-center">
+        <h3>Track Your Claimed Donations</h3>
+        <p>Monitor the status of your claimed food donations in real-time.</p>
+        <a href="/claimed-donations" class="btn btn-info">View Claimed Donations</a>
+    </div>
+
+    <div class="container mt-5">
+        <h3>Messages & Notifications</h3>
+        <div id="notifications" class="list-group">
+            <!-- Messages will be loaded here -->
+        </div>
+    </div>
+
+</body>
+</html>

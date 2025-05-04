@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Dashboard</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #1a252f;
+            text-align: center;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            list-style: none;
+            padding: 10px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu li:hover {
+            background: #34495e;
+        }
+
+        .sidebar-menu li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-menu li a i {
+            margin-right: 10px;
+        }
+
+        .sidebar-menu li.active {
+            background: #3498db;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .menu-toggle {
+            font-size: 20px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            min-height: calc(100vh - 100px);
+        }
+
+        /* Donate Button Special Style */
+        .donate-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .donate-btn:hover {
+            background: #c0392b;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                left: -100%;
+                height: 100vh;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        /* Page Content Styles (hidden by default) */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Dashboard</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active" data-page="home">
+                    <a href="#"><i class="fas fa-home"></i> Home</a>
+                </li>
+                <li data-page="profile">
+                    <a href="#" onclick="fetchProtectedData()"><i class="fas fa-user"></i> Profile</a>
+                </li>
+                <li data-page="contact">
+                    <a href="#"><i class="fas fa-envelope"></i> Contact Us</a>
+                </li>
+                <li>
+                    <button class="donate-btn" onclick="donate(this)" style="width: 100%; text-align: left;">
+                        <i class="fas fa-heart"></i> Donate Now
+                    </button>
+                    <script>
+                        function donate(event){
+                            console.log(window.location);
+                            window.location.href = window.location.origin+"/donate";
+                        }
+                    </script>
+                </li>
+            </ul>
+
+
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <h2 id="pageTitle">Home</h2>
+            </div>
+
+            <div class="content">
+                <!-- Home Page -->
+                <div class="page-content active" id="home">
+                    <h3>Welcome to Our Dashboard</h3>
+                    <p>This is a responsive dashboard with navigation menu. Click on the menu items to explore different sections.</p>
+                    <!-- New container for current user's donations -->
+                    <div id="userDonations">
+                        <!-- Donations will be dynamically loaded here -->
+                    </div>
+                </div>
+
+                <!-- Profile Page -->
+                <div class="page-content" id="profile">
+                    <h3>User Profile</h3>
+                    <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <img src="https://via.placeholder.com/100" alt="Profile Picture"
+                            style="border-radius: 50%; margin-right: 20px;">
+                        <div id="content">
+                            <h4>Username</h4>
+                            <p>Email: example@gmail.com</p>
+                            <p>Member since: January 2020</p>
+                            <button class="donate-btn" onclick="logout()">Logout</button>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>About Me</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus
+                            hendrerit arcu sed erat molestie vehicula.</p>
+                    </div>
+                </div>
+
+                <!-- Contact Page -->
+                <div class="page-content" id="contact">
+                    <h3>Contact Us</h3>
+                    <form style="max-width: 500px;">
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px;">Name</label>
+                            <input type="text"
+                                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px;">Email</label>
+                            <input type="email"
+                                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px;">Message</label>
+                            <textarea
+                                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; height: 100px;"></textarea>
+                        </div>
+                        <button type="submit"
+                            style="background: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer;">Send
+                            Message</button>
+                    </form>
+                </div>
+
+                <!-- Donate Page -->
+                <div class="page-content" id="donate">
+                    <h3>Make a Donation</h3>
+                    <p>Your support helps us continue our important work. Please consider making a donation today.</p>
+
+                    <div style="margin: 30px 0;">
+                        <h4>Select Donation Amount</h4>
+                        <div style="display: flex; gap: 10px; margin: 15px 0;">
+                            <button
+                                style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">$10</button>
+                            <button
+                                style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">$25</button>
+                            <button
+                                style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">$50</button>
+                            <button
+                                style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">$100</button>
+                            <input type="text" placeholder="Other amount"
+                                style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; width: 100px;">
+                        </div>
+                    </div>
+
+                    <div style="max-width: 500px;">
+                        <h4>Payment Information</h4>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px;">Card Number</label>
+                            <input type="text"
+                                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px;">Expiry Date</label>
+                                <input type="text" placeholder="MM/YY"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px;">CVV</label>
+                                <input type="text"
+                                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                        </div>
+                        <button class="donate-btn" style="width: 100%; padding: 12px; font-size: 16px;">Donate
+                            Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src = "/db.js"></script>
+    <!-- Script to fetch and display current user donations -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+            fetch("/api/mydonations")
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById("userDonations");
+                    if (data.length === 0) {
+                        container.innerHTML = "<p>No donations found.</p>";
+                        return;
+                    }
+                    data.forEach(donation => {
+                        const div = document.createElement("div");
+                        div.style.border = "1px solid #ddd";
+                        div.style.padding = "10px";
+                        div.style.marginBottom = "10px";
+                        div.innerHTML = `
+                            
+                            <strong>Donor Type:</strong> ${donation.donorType}<br>
+                            <strong>Food Category:</strong> ${donation.foodCategory}<br>
+                            <strong>Food Type:</strong> ${donation.foodType}<br>
+                            <strong>Specified Items:</strong> ${donation.specifyItems || 'N/A'}<br>
+                            <strong>Quantity:</strong> ${donation.quantity}<br>
+                            <strong>Location:</strong> ${donation.location}<br>
+                            <strong>Expiry:</strong> ${new Date(donation.expiryTime).toLocaleString()}<br>
+                            <strong>Contact Number:</strong> ${donation.contactNumber}<br>
+                            <strong>Latitude:</strong> ${donation.lat}<br>
+                            <strong>Longitude:</strong> ${donation.lng}<br>
+                            <strong>Status:</strong> ${donation.status}<br>
+                            <strong>Created At:</strong> ${new Date(donation.createdAt).toLocaleString()}<br>
+                        `;
+                        container.appendChild(div);
+                    });
+                })
+                .catch(err => console.error("Error fetching donations:", err));
+        });
+    </script>
+</body>
+
+</html>

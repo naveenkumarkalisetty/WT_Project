@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donor Location Picker</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet Control Geocoder -->
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"
+/>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>📍 Donor Location Form</h1>
+    <p>Select your donation location by map or use your current location.</p>
+
+    <form id="locationForm" method="POST" action="/submit-location">
+      <label for="address">Full Address:</label>
+      <input type="text" id="address" name="address" readonly required />
+
+      <input type="hidden" id="lat" name="lat" />
+      <input type="hidden" id="lon" name="lon" />
+
+      <button type="button" onclick="getCurrentLocation()" class="btn-secondary">
+        📍 Use My Current Location
+      </button>
+
+      <div id="map"></div>
+
+      <button type="submit" class="btn-primary">✅ Submit Location</button>
+    </form>
+  </div>
+
+  <script>
+    let map = L.map('map').setView([20.5937, 78.9629], 5);
+    let marker;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors',
+    }).addTo(map);
+
+    L.Control.geocoder({
+  defaultMarkGeocode: false
+})
+.on('markgeocode', function(e) {
+  const center = e.geocode.center;
+  setMarker(center.lat, center.lng);
+})
+.addTo(map);
+
+
+    function setMarker(lat, lon) {
+      if (marker) map.removeLayer(marker);
+      marker = L.marker([lat, lon], { draggable: true }).addTo(map);
+      map.setView([lat, lon], 15);
+      document.getElementById('lat').value = lat;
+      document.getElementById('lon').value = lon;
+      reverseGeocode(lat, lon);
+
+      marker.on('dragend', (e) => {
+        const pos = e.target.getLatLng();
+        document.getElementById('lat').value = pos.lat;
+        document.getElementById('lon').value = pos.lng;
+        reverseGeocode(pos.lat, pos.lng);
+      });
+    }
+
+    function reverseGeocode(lat, lon) {
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById('address').value = data.display_name || '';
+        });
+    }
+
+    function getCurrentLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => setMarker(pos.coords.latitude, pos.coords.longitude),
+          () => alert('Location access denied.')
+        );
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
+    }
+
+    map.on('click', function (e) {
+      setMarker(e.latlng.lat, e.latlng.lng);
+    });
+  </script>
+</body>
+</html>

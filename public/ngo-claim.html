@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGO Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="/ngo.css">
+  <style>
+    #location-display {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      z-index: 999;
+      cursor: pointer;
+    }
+    #location-display:hover::after {
+      content: attr(data-full-address);
+      position: absolute;
+      top: 120%;
+      right: 0;
+      background: #222;
+      color: #fff;
+      padding: 0.5rem;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+    #change-location-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 999;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #map-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    #map-modal-content {
+      background: white;
+      width: 90%;
+      height: 90%;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    #modal-map {
+      width: 100%;
+      height: 100%;
+    }
+    #close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><i class="fas fa-hands-helping"></i> NGO Food Dashboard</h1>
+  </header>
+
+  <button id="change-location-btn">Change Location</button>
+  <div id="location-display" data-full-address="Location not set">Location not set</div>
+
+  <section id="main">
+    <div id="cards-container" class="cards-container"></div>
+    <div id="route-info"></div>
+  </section>
+
+  <div id="map-modal">
+    <div id="map-modal-content">
+      <button id="close-modal">&times;</button>
+      <div id="modal-map"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script>
+    let ngoLocation = null;
+    let modalMap, routeLayer, ngoMarker;
+    const locationDisplay = document.getElementById('location-display');
+
+    async function fetchDonors() {
+      const res = await fetch('/api/locations');
+      return await res.json();
+    }
+
+    function createCard(donor, index) {
+      return `
+        <div class="card">
+          <div class="card-content">
+            <h3>Donor #${index + 1}</h3>
+            <p><i class="fas fa-map-marker-alt"></i> ${donor.address}</p>
+            <button class="claim-btn" onclick='claimDonor(${JSON.stringify(donor)})'>Claim</button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function reverseGeocode(lat, lon) {
+      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+      const data = await response.json();
+      return data.display_name;
+    }
+
+    async function setNgoLocation(latlng) {
+      if (ngoMarker) modalMap.removeLayer(ngoMarker);
+      ngoMarker = L.marker(latlng, { draggable: true }).addTo(modalMap).bindPopup("NGO Location").openPopup();
+      ngoLocation = { lat: latlng.lat, lon: latlng.lng };
+
+      const fullAddress = await reverseGeocode(latlng.lat, latlng.lng);
+      locationDisplay.innerHTML = fullAddress.split(",")[1]?.trim() || fullAddress;
+      locationDisplay.setAttribute('data-full-address', fullAddress);
+      closeModal();
+    }
+
+    function addRoute(from, to) {
+      const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=YOUR_API_KEY&start=${from.lon},${from.lat}&end=${to.lon},${to.lat}`;
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          const coords = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
+          if (routeLayer) modalMap.removeLayer(routeLayer);
+          routeLayer = L.polyline(coords, { color: 'blue', weight: 4 }).addTo(modalMap);
+          modalMap.fitBounds(routeLayer.getBounds());
+
+          const duration = (data.features[0].properties.summary.duration / 60).toFixed(1);
+          const distance = (data.features[0].properties.summary.distance / 1000).toFixed(2);
+          document.getElementById('route-info').innerHTML = `
+            <p><b>Distance:</b> ${distance} km</p>
+            <p><b>Estimated Time:</b> ${duration} mins</p>
+          `;
+        });
+    }
+
+    function claimDonor(donor) {
+      if (!ngoLocation) return alert("Please set your NGO location first.");
+      addRoute(ngoLocation, { lat: donor.lat, lon: donor.lon });
+    }
+    function openModal() {
+  document.getElementById('map-modal').style.display = 'flex';
+
+  if (!modalMap) {
+    modalMap = L.map('modal-map').setView([20.59, 78.96], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(modalMap);
+
+    L.Control.geocoder({
+      defaultMarkGeocode: false
+    })
+    .on('markgeocode', function(e) {
+      const latlng = e.geocode.center;
+      const fullAddress = e.geocode.name;
+
+      const locationData = {
+        address: fullAddress,
+        lat: latlng.lat,
+        lon: latlng.lng
+      };
+
+      fetch('/api/submit-location', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(locationData)
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Location submitted successfully", data);
+        document.getElementById('map-modal').style.display = 'none';
+        locationDisplay.innerHTML = `${fullAddress}`;
+        locationDisplay.title = `Lat: ${latlng.lat}, Lon: ${latlng.lng}`;
+      })
+      .catch(err => {
+        console.error("Error submitting location:", err);
+      });
+
+      modalMap.setView(latlng, 14);
+    })
+    .addTo(modalMap);
+
+    modalMap.on('click', function(e) {
+      setNgoLocation(e.latlng);
+    });
+  }
+}
+
+    function closeModal() {
+      document.getElementById('map-modal').style.display = 'none';
+    }
+
+    function init() {
+      fetchNgoLocation()
+
+      fetchDonors().then(donors => {
+        const container = document.getElementById('cards-container');
+        container.innerHTML = donors.map(createCard).join('');
+      });
+
+      document.getElementById('change-location-btn').onclick = openModal;
+      document.getElementById('close-modal').onclick = closeModal;
+    }
+    async function fetchNgoLocation() {
+  try {
+    const res = await fetch('/api/submit-location/latest');
+    const data = await res.json();
+    if (data && data.location) {
+      const { address, lat, lon } = data.location;
+      locationDisplay.innerHTML = `${address}`;
+      locationDisplay.title = `Lat: ${lat}, Lon: ${lon}`;
+      ngoLocation = { lat, lon }; // so route generation works
+    }
+  } catch (err) {
+    console.error("Failed to fetch NGO location", err);
+  }
+}
+
+
+    window.onload = init;
+  </script>
+</body>
+</html>

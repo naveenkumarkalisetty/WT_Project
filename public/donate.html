@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Donate Food</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body { background-color: #f4f6f9; padding: 40px; font-family: 'Poppins', sans-serif; }
+        .container {
+            max-width: 700px;
+            background: linear-gradient(135deg, #ffffff, #f1f1f1);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease-in-out;
+        }
+       
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        .container-title:hover {
+            transform: translateY(-5px);
+        }
+        .navbar { margin-bottom: 20px; border-radius: 10px; }
+        .form-label { font-weight: 600; color: #333; }
+        .form-select, .form-control { border-radius: 10px; }
+        .btn-animated { transition: all 0.3s ease-in-out; }
+        .btn-animated:hover { transform: scale(1.05); }
+        #map { height: 300px; margin-top: 10px; border-radius: 10px; display: none; }
+        #preview { margin-top: 10px; max-width: 100%; border-radius: 10px; display: none; }
+        .custom-radio-group { display: flex; gap: 15px; }
+        .custom-radio-group input { margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark wow animate__animated animate__fadeInDown">
+        <div class="container d-flex justify-content-center">
+            <a class="navbar-brand text-center"  style="background-color: aquamarine;" href="#">Food Donation Portal</a>
+        </div>
+    </nav>
+    
+
+    <!-- Donation Form -->
+    <div class="container wow animate__animated animate__fadeInUp">
+        <h2 class="text-center mb-4 text-success">Donate Food</h2>
+        <form id="form" class="p-4 border rounded shadow-sm bg-light"  enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Donor Type</label>
+                <select class="form-select" required>
+                    <option value="">Select Donor Type</option>
+                    <option>Hostel Mess</option>
+                    <option>Wedding Caterer</option>
+                    <option>Restaurant</option>
+                    <option>Corporation</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Food Category</label>
+                <div class="custom-radio-group">
+                    <label><input type="radio" name="food_category" value="Vegetarian" onclick="updateFoodOptions('vegetarian')" required> Vegetarian</label>
+                    <label><input type="radio" name="food_category" value="Non-Vegetarian" onclick="updateFoodOptions('non-vegetarian')" required> Non-Vegetarian</label>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Food Type</label>
+                <select class="form-select" id="foodType" required>
+                    <option value="">Select Food Type</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <input type="checkbox" id="specifyItems" onclick="toggleAdditionalInfo()"> Wanna specify?
+            </div>
+            
+            <div class="mb-3" id="additionalInfo" style="display: none;">
+                <label class="form-label">Specify Items</label>
+                <textarea class="form-control" rows="3" placeholder="Specify food items..."></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Quantity (in kg or portions)</label>
+                <input type="number" class="form-control" placeholder="Enter quantity" required  id="quantity">
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Location</label>
+                <input type="text" id="address" class="form-control" placeholder="Select location on map" readonly required>
+                <input type="hidden" id="lat" name="lat">
+                <input type="hidden" id="lng" name="lng">
+                <button type="button" class="btn btn-primary w-100 mt-2" onclick="openMap()">Select on Map</button>
+                <button type="button" class="btn btn-outline-primary w-100 mt-2" onclick="getCurrentLocation()">Use Current Location</button>
+                <div id="map"></div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Upload Food Image</label>
+                <input type="file" id="foodImage" class="form-control" accept="image/*" onchange="previewImage()" name="food_image">
+                <img id="preview" alt="Food Preview">
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Expiry Time</label>
+                <input type="datetime-local" class="form-control" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Contact Number</label>
+                <input type="tel" class="form-control" placeholder="Enter contact number" required>
+            </div>
+            
+            <button type="submit" class="btn btn-success w-100 btn-animated">Submit Donation</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script>    
+
+    const form = document.getElementById("form");
+    form.addEventListener("submit", (event) => {
+        event.preventDefault(); // Prevent the default form submission
+
+        const formData = new FormData(form);
+        const data = {};
+
+        // Convert FormData to JSON
+        formData.forEach((value, key) => {
+            if (data[key]) {
+                // Handle multiple values for the same key (e.g., checkboxes)
+                if (!Array.isArray(data[key])) {
+                    data[key] = [data[key]];
+                }
+                data[key].push(value);
+            } else {
+                data[key] = value;
+            }
+        });
+
+        // Add additional fields not captured by FormData
+        const foodCategory = document.querySelector('input[name="food_category"]:checked');
+        if (foodCategory) {
+            data.food_category = foodCategory.value;
+        }
+
+        const specifyItems = document.getElementById("specifyItems").checked;
+        data.specify_items = specifyItems ? document.querySelector("#additionalInfo textarea").value : null;
+
+        const location = document.getElementById("address").value;
+        if (location) {
+            data.location = location;
+        }
+
+        const foodImage = document.getElementById("foodImage").files[0];
+        if (foodImage) {
+            data.food_image = foodImage.name; // You can upload the file separately if needed
+        }
+
+        const expiryTime = document.querySelector('input[type="datetime-local"]').value;
+        if (expiryTime) {
+            data.expiry_time = expiryTime;
+        }
+
+        const contactNumber = document.querySelector('input[type="tel"]').value;
+        if (contactNumber) {
+            data.contact_number = contactNumber;
+        }
+
+        const donorType = document.querySelector('.form-select').value;
+        if (donorType) {
+            data.donor_type = donorType;
+        }
+
+        const foodType = document.getElementById("foodType").value;
+        if (foodType) {
+            data.food_type = foodType;
+        }
+
+        data.quantity = document.getElementById("quantity").value; // Get quantity from the input field
+
+        // Add latitude and longitude
+        data.latitude = document.getElementById("lat").value;
+        data.longitude = document.getElementById("lng").value;
+
+        console.log(data); // Log the JSON data
+        console.log(formData);
+
+        formData.append("data", JSON.stringify(data)); // Append JSON data to FormData
+
+        fetch('api/donation', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Donation submitted successfully!");
+                form.reset(); // Reset the form after submission
+                document.getElementById("map").style.display = "none"; // Hide map after submission
+                document.getElementById("preview").style.display = "none"; // Hide image preview after submission
+                window.location.href = "/dashboard";
+            } else {
+                alert("Error submitting donation. Please try again.");
+            }
+        })
+    });
+
+    function previewImage() {
+        const fileInput = document.getElementById("foodImage");
+        const preview = document.getElementById("preview");
+
+        // Check if a file is selected
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+
+            // When the file is loaded, set the preview image source
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block"; // Show the preview image
+            };
+
+            reader.readAsDataURL(fileInput.files[0]); // Read the file as a data URL
+        } else {
+            preview.style.display = "none"; // Hide the preview if no file is selected
+            preview.src = ""; // Clear the preview source
+        }
+    }
+
+        function updateFoodOptions(category) {
+            const foodType = document.getElementById("foodType");
+            foodType.innerHTML = "";
+            let options = category === "vegetarian" ? ["Rice", "Curry", "Vegetables", "Fruits", "Bread", "Desserts"] : ["Chicken", "Mutton", "Fish", "Eggs", "Seafood"];
+            options.forEach(item => {
+                let option = document.createElement("option");
+                option.text = item;
+                option.value = item;
+                foodType.add(option);
+            });
+        }
+        
+        
+
+
+        function toggleAdditionalInfo() {
+            document.getElementById("additionalInfo").style.display = document.getElementById("specifyItems").checked ? "block" : "none";
+        }
+        let map, marker;
+        async function reverseGeocode(lat, lon) {
+            console.log(lat, "he");
+            await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+                .then((response) => response.json())
+                .then((data) => {
+                document.getElementById('address').value = data.display_name || '';
+            });
+            console.log(lat, "he");
+            
+        }
+function openMap() {
+    document.getElementById("map").style.display = "block";
+    setTimeout(() => {
+        if (!map) {
+            map = L.map('map').setView([20.5937, 78.9629], 5); // Centered on India
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            map.on('click', function(e) {
+                if (marker) {
+                    map.removeLayer(marker);
+                }
+                marker = L.marker(e.latlng).addTo(map);
+                //document.getElementById("address").value = `Lat: ${e.latlng.lat}, Lng: ${e.latlng.lng}`;
+                reverseGeocode(e.latlng.lat, e.latlng.lng);
+                document.getElementById("lat").value = e.latlng.lat;
+                document.getElementById("lng").value = e.latlng.lng;
+            });
+        } else {
+            map.invalidateSize(); // Fix for map display issues
+        }
+    }, 200);
+}
+
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                document.getElementById("address").value = `Lat: ${lat}, Lng: ${lon}`;
+                document.getElementById("lat").value = lat;
+                document.getElementById("lng").value = lon;
+                document.getElementById("map").style.display = "block";
+
+                if (!map) {
+                    map = L.map('map').setView([lat, lon], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+                    // Added click event to allow manual location selection
+                    map.on('click', function(e) {
+                        if (marker) { map.removeLayer(marker); }
+                        marker = L.marker(e.latlng).addTo(map);
+                        reverseGeocode(e.latlng.lat, e.latlng.lng);
+                        // document.getElementById("address").value = `Lat: ${e.latlng.lat}, Lng: ${e.latlng.lng}`;
+                        document.getElementById("lat").value = e.latlng.lat;
+                        document.getElementById("lng").value = e.latlng.lng;
+                    });
+                } else {
+                    map.setView([lat, lon], 13);
+                }
+
+                if (marker) {
+                    map.removeLayer(marker);
+                }
+                marker = L.marker([lat, lon]).addTo(map);
+
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('address').value = data.display_name || "Address not found";
+                    })
+                    .catch(err => console.error("Reverse geocoding error:", err));
+            },
+            (error) => {
+                alert("Error getting location: " + error.message);
+            }
+        );
+    } else {
+        alert("Geolocation is not supported by your browser.");
+    }
+}
+
+    </script>
+</body>
+</html>

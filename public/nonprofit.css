@@ -1,0 +1,110 @@
+:root {
+    --primary: #2ecc71;
+    --secondary: #1e293b;
+    --accent: #3498db;
+    --text-dark: #0f172a;
+    --text-light: #f8fafc;
+    --gradient: linear-gradient(135deg, var(--primary) 0%, #27ae60 100%);
+}
+
+body {
+    background: url('hero.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+#food {
+    background: url('5.jpg') no-repeat center;
+    background-size: cover;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.content-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.content-section:hover {
+    transform: translateY(-5px);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+div h5 {
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('hero.jpg');
+    background-size: cover;
+    background-position: center;
+    color: var(--text-light);
+    padding: 6rem 0;
+    margin-bottom: 3rem;
+    border-radius: 0 0 50px 50px;
+}
+
+.btn-custom {
+    background: var(--gradient);
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.footer {
+    background: linear-gradient(135deg, var(--secondary) 0%, #2c3e50 100%);
+    padding: 4rem 0;
+    color: var(--text-light);
+}
+
+.footer a {
+    color: var(--text-light);
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+}
+
+.scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .content-section {
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    
+    .hero-section {
+        padding: 4rem 0;
+    }
+}

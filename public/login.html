@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Registration Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">  
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style-login.css">
+    
+</head>
+<body>
+    
+    <div class="container">
+        <div class="card w-100" style="max-width: 900px;">
+          <div class="row g-0">
+            <div class="col-12 col-md-6 text-center mb-3 mb-md-0">
+              <img src="https://images.pexels.com/photos/6591162/pexels-photo-6591162.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="login-img" alt="Food Donation">
+            </div>
+            <div class="col-md-6 p-4">
+              <h3 class="text-center mb-4 zoom-title" tabindex="0">Welcome Back to Food Bridge</h3>
+    
+              <form id="loginForm" class="needs-validation" novalidate>
+                <div class="form-floating mb-3">
+                  <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" required>
+                  <label for="loginEmail">Email address</label>
+                  <div class="invalid-feedback">Please enter a valid email.</div>
+                </div>
+    
+                <div class="form-floating mb-3">
+                  <input type="password" class="form-control" id="loginPassword" placeholder="Password" required minlength="6">
+                  <label for="loginPassword">Password</label>
+                  <div id="password-strength" class="password-strength mt-2"></div>
+                  <div class="invalid-feedback">Password must be at least 6 characters.</div>
+                </div>
+    
+                <button type="submit" class="btn btn-primary w-100 mb-2">Login</button>
+    
+                <div class="mb-2 text-end">
+                    <a href="#" class="interactive-link text-decoration-none" id="forgotPasswordLink">Forgot Password?</a>
+                  </div>
+                <a href="/auth/google" ><button type="button" class="btn btn-outline-dark w-100 mb-3">
+                  <i class="bi bi-google me-2"></i> Sign in with Google
+                </button></a>
+    
+                <p class="text-center mt-2">
+                  Don't have an account?
+                  <a href="#" class="interactive-link" data-bs-toggle="modal" data-bs-target="#registrationModal">Register here</a>
+                </p>
+              </form>
+  
+  <!-- Add this right after your login form (inside the same card): -->
+  <div id="forgotPasswordSection" style="display: none;  position: relative;">
+    <h3 class="card-title mb-4">Reset Password</h3>
+    <form id="forgotPasswordForm" class="needs-validation" novalidate>
+      <div class="mb-3">
+        <label for="resetEmail" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="resetEmail" required>
+        <div class="invalid-feedback">Please provide a valid email.</div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Send Reset Link</button>
+      <div class="text-center mt-3">
+        <a href="#" class="interactive-link" id="backToLoginLink">Back to Login</a>
+      </div>
+    </form>
+  </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+<!-- Registration Modal -->
+<div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registrationModalLabel">Registration</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registrationForm">
+                    <div class="mb-3">
+                        <label class="form-label">Register as:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="registrationType" id="userRegistration" value="user" checked>
+                            <label class="form-check-label" for="userRegistration">User</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="registrationType" id="corporationRegistration" value="corporation">
+                            <label class="form-check-label" for="corporationRegistration">Corporation/Institution</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="registrationType" id="ngoRegistration" value="ngo">
+                            <label class="form-check-label" for="ngoRegistration">NGO</label>
+                        </div>
+                    </div>
+
+                    <!-- Corporation Registration Fields -->
+                    <div id="corporationFields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="corporationName" class="form-label">Name</label>
+                            <input type="text" class="form-control" name="corporationName" id="corporationName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="corporationEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" name="corporationEmail" id="corporationEmail">
+                        </div>
+                        <div class="mb-3">
+                            <label for = "corporationPassword" class = "form-label">Password</label>
+                            <input type = "password" class = "form-control" name="corporationPassword" id = "corporationPassword">
+                        </div>
+                        <div class="mb-3">
+                            <label for="corporationType" class="form-label">Type</label>
+                            <select class="form-select" name="corporationType" id="corporationType">
+                                <option value="Corporation">Corporation</option>
+                                <option value="Mess">Institution mess</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="corporationContact" class="form-label">Contact Number</label>
+                            <input type="tel" class="form-control" name="corporationContact" id="corporationContact">
+                        </div>
+                    </div>
+
+                    <!-- User Registration Fields -->
+                    <div id="userFields">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" name = "username" id="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" name = "userEmail" id="userEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" name = "userPassword" id ="userPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userAge" class="form-label">Age</label>
+                            <input type="number" class="form-control" name = "userAge" id="userAge" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userContact" class="form-label">Contact Number</label>
+                            <input type="tel" class="form-control" name="userContact" id="userContact" required>
+                        </div>
+                    </div>
+
+                    <!-- NGO Registration Fields -->
+                    <div id="ngoFields" style="display: none;">
+                        <div class="mb-3">
+                            <label for = "ngoUsername" class="form-label">Name</label>
+                            <input type="text" class="form-control" name = "ngoUsername" id="ngoUsername">
+                        </div>
+                        <div class="mb-3">
+                            <label for="ngoEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" name = "ngoEmail" id="ngoEmail">
+                        </div>
+                        <div class="mb-3">
+                            <label for="ngoPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" name = "ngoPassword" id ="ngoPassword">
+                        </div>
+                        <div class="mb-3">
+                            <label for="details" class="form-label">Tell us something that highlights 'Food Needs'</label>
+                            <textarea class="form-control" name = "details" id="details" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ngoContact" class="form-label">Contact Number</label>
+                            <input type="tel" class="form-control" name="ngoContact" id="ngoContact">
+                        </div>
+                    </div>
+
+                    <!-- Location Section -->
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Location / Address</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Your address will appear here" readonly required>
+                    </div>
+                    <input type="hidden" id="lat" name="lat">
+                    <input type="hidden" id="lon" name="lon">
+                    <button type="button" class="btn btn-secondary mb-2" onclick="getLocation()">Get My Location</button>
+                    <!-- <button type="button" btn btn-secondary onclick="enableMapSelection()">🗺️ Select on Map</button> -->
+                    <div id="map"></div>
+
+                    <button type="submit" class="btn btn-primary w-100" id="registerButton">Register as User</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Success Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+    <div id="loginSuccessToast" class="toast text-white bg-success border-0 animate__animated animate__fadeInRight" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          🎉 <strong>Login successful!</strong> Redirecting you shortly...
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Failed Toast -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+    <div id="loginFailedToast" class="toast text-white bg-danger border-0 animate__animated animate__shakeX" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          ❌ <strong>Login failed!</strong> Please check your credentials.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+  <script>
+const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+const backToLoginLink = document.getElementById('backToLoginLink');
+const loginForm = document.getElementById('loginForm');
+const forgotPasswordSection = document.getElementById('forgotPasswordSection');
+// Show forgot password
+forgotPasswordLink.addEventListener('click', function(e) {
+  e.preventDefault();
+  loginForm.style.opacity = '0';
+  setTimeout(() => {
+    loginForm.style.display = 'none';
+    forgotPasswordSection.style.display = 'block';
+    setTimeout(() => forgotPasswordSection.classList.add('active'), 10);
+  }, 300);
+});
+
+// Show login form
+backToLoginLink.addEventListener('click', function(e) {
+  e.preventDefault();
+  forgotPasswordSection.classList.remove('active');
+  setTimeout(() => {
+    forgotPasswordSection.style.display = 'none';
+    loginForm.style.display = 'block';
+    setTimeout(() => loginForm.style.opacity = '1', 10);
+  }, 300);
+});
+
+// In the forgot password form submit handler
+document.getElementById('forgotPasswordForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  // Manually trigger validation
+  if (!this.checkValidity()) {
+    this.classList.add('was-validated');
+    return;
+  }
+
+  try {
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Sending...';
+
+    const response = await fetch('/api/forgotpassword', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('resetEmail').value
+      })
+    });
+
+    if (!response.ok) throw new Error('Request failed');
+    
+    new bootstrap.Toast(document.getElementById('resetSuccessToast')).show();
+    document.getElementById('backToLoginLink').click();
+    
+  } catch (error) {
+    console.error("Error:", error);
+    new bootstrap.Toast(document.getElementById('resetErrorToast')).show();
+  } finally {
+    const btn = document.querySelector('#forgotPasswordForm button[type="submit"]');
+    btn.disabled = false;
+    btn.textContent = 'Send Reset Link';
+  }
+}); 
+</script>
+     <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JS -->
+  <script src="script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Toggle Corporation/User/NGO Registration Fields
+        const userRegistration = document.getElementById('userRegistration');
+        const corporationRegistration = document.getElementById('corporationRegistration');
+        const ngoRegistration = document.getElementById('ngoRegistration');
+        const userFields = document.getElementById('userFields');
+        const corporationFields = document.getElementById('corporationFields');
+        const ngoFields = document.getElementById('ngoFields');
+        const registerButton = document.getElementById('registerButton');
+
+
+        // values
+        // user
+        const userData = [
+            document.getElementById('username'), 
+            document.getElementById('userEmail'), 
+            document.getElementById('userPassword'), 
+            document.getElementById('userAge'),
+            document.getElementById('userContact')
+        ];
+
+        // corporation
+        const corporationData = [
+            document.getElementById('corporationName'), 
+            document.getElementById('corporationEmail'), 
+            document.getElementById('corporationPassword'), 
+            document.getElementById('corporationType'),
+            document.getElementById('corporationContact')
+        ];
+
+        // ngo
+        const ngoData = [
+            document.getElementById('ngoUsername'), 
+            document.getElementById('ngoEmail'), 
+            document.getElementById('ngoPassword'), 
+            document.getElementById('details'),
+            document.getElementById('ngoContact')
+        ];
+
+
+        userRegistration.addEventListener('change', () => {
+            userFields.style.display = 'block';
+            corporationFields.style.display = 'none';
+            ngoFields.style.display = 'none';
+
+            registerButton.innerText = "Register as user";
+
+            // removing attributes
+            corporationData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            ngoData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            if (userRegistration.checked) {
+                userData.forEach((element) => {
+                    element.setAttribute('required', true);
+                })
+            }
+        });
+
+        corporationRegistration.addEventListener('change', () => {
+            userFields.style.display = 'none';
+            corporationFields.style.display = 'block';
+            ngoFields.style.display = 'none';
+
+            registerButton.innerText = "Register as Corporation";
+
+            userData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            ngoData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            if (corporationRegistration.checked) {
+                corporationData.forEach((element) => {
+                    element.setAttribute('required', true);
+                })
+            }
+        });
+
+        ngoRegistration.addEventListener('change', () => {
+            userFields.style.display = 'none';
+            corporationFields.style.display = 'none';
+            ngoFields.style.display = 'block';
+
+            registerButton.innerText = "Register as NGO";
+
+            userData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            corporationData.forEach((element) => {
+                element.removeAttribute('required');
+            })
+
+            if (ngoRegistration.checked) {
+                ngoData.forEach((element) => {
+                    element.setAttribute('required', true);
+                })
+            }
+        });
+
+        
+        // Sign in with Google (Placeholder)
+       
+
+        // Get Location using Geolocation and Reverse Geocoding (using Nominatim)
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, positionError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        async function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            document.getElementById('lat').value = lat;
+            document.getElementById('lon').value = lon;
+            // Display map and set view
+            let mapDiv = document.getElementById('map');
+            mapDiv.style.display = "block";
+            let map = L.map('map').setView([lat, lon], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            
+            let marker = L.marker([lat, lon]).addTo(map);
+
+            // Reverse Geocode using Nominatim
+            map.on('click', async function(e) {
+                if (marker) {
+                    map.removeLayer(marker);
+                }
+                marker = L.marker(e.latlng).addTo(map);
+
+                await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${e.latlng.lat}&lon=${e.latlng.lng}&format=json`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        document.getElementById('address').value = data.display_name || '';
+                    })
+                    .catch(err => console.error("Reverse geocoding error:", err));
+            });
+
+            await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('address').value = data.display_name || "Address not found";
+                })
+                .catch(err => console.error(err));
+        }
+        function enableMapSelection() {
+    document.getElementById('map').style.display = "block";
+
+    if (!map) {
+        map = L.map('map').setView([0, 0], 2); // Default view
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    }
+
+    map.on('click', async function (e) {
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker(e.latlng).addTo(map);
+
+        const lat = e.latlng.lat;
+        const lon = e.latlng.lng;
+
+        document.getElementById('lat').value = lat;
+        document.getElementById('lon').value = lon;
+
+        await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('address').value = data.display_name || '';
+            })
+            .catch(err => console.error("Reverse geocoding error:", err));
+    });
+}
+        function positionError(error) {
+            alert("Error in getting your location: " + error.message);
+        }
+
+        // Form Submission Handling
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const loginData = {
+        email: document.getElementById('loginEmail').value,
+        password: document.getElementById('loginPassword').value
+    }
+
+    login(loginData);
+});
+
+async function login(loginData) {
+    try {
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(loginData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Show success toast
+            const successToast = new bootstrap.Toast(document.getElementById('loginSuccessToast'));
+            successToast.show();
+
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 3000); // Delay redirect to allow toast display
+        } else {
+            // Show failure toast
+            const failToast = new bootstrap.Toast(document.getElementById('loginFailedToast'));
+            failToast.show();
+        }
+    } catch (err) {
+        console.error("Network error:", err.message);
+
+        const failToast = new bootstrap.Toast(document.getElementById('loginFailedToast'));
+        failToast.show();
+    }
+}
+
+
+        // Registration 
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            let registerType = document.querySelector('input[name="registrationType"]:checked').value;
+            
+            const registerData = { registerType, data:{} };
+            let data;
+            if (registerType == 'user') {
+                data = ['username', 'email', 'password', 'age', 'contactNumber'];
+                for (let i = 0; i < data.length; i++) {
+                    registerData.data[data[i]] = userData[i].value;
+                }
+            }
+            else if (registerType == 'corporation') {
+                data = ['name', 'email', 'password', 'corporationType', 'contactNumber']; 
+                for (let i = 0; i < data.length; i++) {
+                    registerData.data[data[i]] = corporationData[i].value;
+                }
+            }
+            else if (registerType == 'ngo') {
+                data = ['name', 'email', 'password', 'details', 'contactNumber'];
+                for (let i = 0; i < data.length; i++) {
+                    registerData.data[data[i]] = ngoData[i].value;
+                }
+            }
+            // Add location details
+            registerData.data.address = document.getElementById('address').value;
+            registerData.data.lat = document.getElementById('lat').value;
+            registerData.data.lon = document.getElementById('lon').value;
+            try {
+                const responseMessage = await fetch('/register', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(registerData)
+                });
+                if (responseMessage.ok) {
+                    alert("Registration successful");
+                    window.location.href = '/signup';
+                } else {
+                    alert(await responseMessage.text());
+                }
+            } catch(err) {
+                console.log(err.message);
+                alert("Registration failed: " + err.message);
+            }
+            
+        });
+
+        
+        document.getElementById("forgotForm").addEventListener('submit', e => {
+            e.preventDefault();
+            try {
+                // Placeholder for forgot password function
+
+                const email = document.getElementById("forgotEmail").value;
+                fetch(`/api/forgotpassword`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email:email })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    window.location.href = '/forgot-password?token='+data.token;
+                });
+            } catch(err) {
+                console.log(err.message);
+            }
+        });
+    </script>
+</body>
+</html>
