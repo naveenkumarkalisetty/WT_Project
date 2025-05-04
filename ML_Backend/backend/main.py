@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from io import StringIO
-from model import train_model, predict, get_saved_model_info, get_user_model_path
+from .model import train_model, predict, get_saved_model_info, get_user_model_path
 import os
 import jwt
 from typing import Optional
