@@ -35,12 +35,20 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
+    <nav class="navbar navbar-dark bg-dark d-md-none">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <span class="navbar-brand">Donor Dashboard</span>
+        </div>
+    </nav>
 
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav class="col-md-2 d-none d-md-block sidebar">
-                <h4>Donor Dashboard</h4>
+            <nav id="sidebarMenu" class="col-md-2 collapse d-md-block sidebar">
+                <h4 class="d-none d-md-block">Donor Dashboard</h4>
                 <a href="#" onclick="showSection('dashboard')">Home</a>
                 <a href="/donate">Donate Food</a>
                 <a onclick='portSwitch()'>Food prediction</a>
@@ -53,7 +61,7 @@
             <script>
                 function portSwitch() {
                     
-                    window.location.href = "https://wt-project-ml.onrender.com";
+                    window.location.href = `http://localhost:8000`;
                 }
             </script>
             <!-- Main Content -->
